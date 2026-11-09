@@ -161,13 +161,19 @@ def sigshutdown_handler(_signo, _stack_frame):
 
     sys.exit()
 
+# Local only unless asked otherwise, a blank LISTEN_HOST would otherwise bind every interface
+DEFAULT_LISTEN_HOST = '127.0.0.1'
+
+def default_listen_host(environ=os.environ):
+    return environ.get("LISTEN_HOST", "").strip() or DEFAULT_LISTEN_HOST
+
 def print_help():
     """Print help text for command line options"""
     print('Usage: changedetection.py [options]')
     print('')
     print('Standard options:')
     print('  -s                SSL enable')
-    print('  -h HOST           Listen host (default: 0.0.0.0)')
+    print(f'  -h HOST           Listen host (default: LISTEN_HOST or {DEFAULT_LISTEN_HOST})')
     print('  -p PORT           Listen port (default: 5000)')
     print('  -d PATH           Datastore path')
     print('  -l LEVEL          Log level (TRACE, DEBUG, INFO, SUCCESS, WARNING, ERROR, CRITICAL)')
@@ -219,7 +225,7 @@ def main():
     include_default_watches = True
     all_paused = None  # None means don't change, True/False to set
 
-    host = os.environ.get("LISTEN_HOST", "0.0.0.0").strip()
+    host = default_listen_host()
     port = int(os.environ.get('PORT', 5000))
     ssl_mode = False
 

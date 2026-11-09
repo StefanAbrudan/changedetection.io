@@ -154,6 +154,10 @@ ENV PYTHONPATH=/usr/local
 
 EXPOSE 5000
 
+# Inside a container the app must listen on all interfaces for a published port to reach it,
+# the ports: mapping decides who can connect from outside
+ENV LISTEN_HOST=0.0.0.0
+
 # The actual flask app module
 COPY changedetectionio /app/changedetectionio
 
